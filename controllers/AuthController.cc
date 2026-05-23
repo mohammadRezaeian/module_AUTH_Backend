@@ -6,26 +6,10 @@ void V1::AUTHAPI::AuthController::registerUser(const drogon::HttpRequestPtr& req
     try {
         auto json = req->getJsonObject();
 
-        if (!json)
-        {
-            throw std::runtime_error("Invalid JSON body");
-        }
-
-        if (!json->isObject())
-        {
-            throw std::runtime_error("JSON must be object");
-        }
-
-        m_validationsDatas.validateJsonBody(*json);
-
-        m_validationsDatas.validateJsonBody(*json);
+        m_validationsDatas.validateJsonBody(json);
         m_registerRequest.parseJson(*json);
-
         m_validationsDatas.validateJson(m_registerRequest);
-
         sendMessagesResponse("accessToken" , m_authService.registerUser(m_registerRequest.getEmail(), m_registerRequest.getPassword()), std::move(callback));
-
-
     }
     catch (const std::exception& e)
     {
