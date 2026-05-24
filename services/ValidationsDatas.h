@@ -14,8 +14,8 @@ public:
     void validateJson(const T& _json);
 
     void validateJsonBody(const std::shared_ptr<Json::Value> _json);
+    void validateJsonBodyLogin(const std::shared_ptr<Json::Value> _json);
 
-    // bool checkJsonValidation(const RegisterRequest);
 };
 
 

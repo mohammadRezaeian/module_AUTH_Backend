@@ -1,15 +1,18 @@
 #include "AuthController.h"
 #include  <services/JwtService.h>
 
-void V1::AUTHAPI::AuthController::registerUser(const drogon::HttpRequestPtr& req,std::function<void(const drogon::HttpResponsePtr&)>&& callback)
+void V1::AUTHAPI::AuthController::registerUser(const drogon::HttpRequestPtr& req, std::function<void(const drogon::HttpResponsePtr&)>&& callback)
 {
-    try {
+    try
+    {
         auto json = req->getJsonObject();
 
         m_validationsDatas.validateJsonBody(json);
         m_registerRequest.parseJson(*json);
         m_validationsDatas.validateJson(m_registerRequest);
-        sendMessagesResponse("accessToken" , m_authService.registerUser(m_registerRequest.getEmail(), m_registerRequest.getPassword()), std::move(callback));
+        sendMessagesResponse("accessToken", m_authService.registerUser(
+            m_registerRequest.getEmail(), m_registerRequest.getPassword(),
+            m_registerRequest.getUsername()), std::move(callback));
     }
     catch (const std::exception& e)
     {
@@ -17,38 +20,28 @@ void V1::AUTHAPI::AuthController::registerUser(const drogon::HttpRequestPtr& req
     }
 }
 
-void V1::AUTHAPI::AuthController::loginUser(const drogon::HttpRequestPtr& req,std::function<void(const drogon::HttpResponsePtr&)>&& callback)
+void V1::AUTHAPI::AuthController::loginUser(const drogon::HttpRequestPtr& req, std::function<void(const drogon::HttpResponsePtr&)>&& callback)
 {
-    try {
+    try
+    {
         auto json = req->getJsonObject();
 
-        LoginRequest request = LoginRequest::fromJson(*json);
+        m_validationsDatas.validateJsonBodyLogin(json);
+        m_LoginRequest.parseJson(*json);
+        m_validationsDatas.validateJson(m_LoginRequest);
+        sendMessagesResponse("accessToken", m_authService.loginUser(
+            m_LoginRequest.getEmail(), m_LoginRequest.getPassword(),
+            m_LoginRequest.getUsername()), std::move(callback));
 
-        auto result = AuthService::loginUser(request);
-        Json::Value response;
-        response["accessToken"] = result.accessToken;
-
-        auto resp =
-            drogon::HttpResponse::newHttpJsonResponse(response);
-
-        callback(resp);
     }
     catch (const std::exception& e)
-        {
-        Json::Value err;
-        err["error"] = e.what();
-
-        auto resp =drogon::HttpResponse::newHttpJsonResponse(err);
-        resp->setStatusCode(drogon::k401Unauthorized);
-
-        callback(resp);
+    {
+       sendMessageErrors(e.what(), std::move(callback));
     }
 }
 
-void V1::AUTHAPI::AuthController::me(
-    const drogon::HttpRequestPtr& req,
-    std::function<void(const drogon::HttpResponsePtr&)>&& callback
-) {
+void V1::AUTHAPI::AuthController::me(const drogon::HttpRequestPtr& req,std::function<void(const drogon::HttpResponsePtr&)>&& callback)
+{
     auto currentUser =
         req->getAttributes()->get<CurrentUser>("currentUser");
 

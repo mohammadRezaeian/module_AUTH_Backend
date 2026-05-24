@@ -8,7 +8,8 @@
 class UserRepository {
 public:
     static void save(const User& user);
-    static std::optional<User> findByEmail(const std::string& email);
+    static std::optional<User> findByEmail(const std::string& _email);
+    static std::optional<User> findByUserName(const std::string& _username);
 
 private:
     static std::vector<User> users;

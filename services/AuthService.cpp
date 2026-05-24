@@ -1,66 +1,72 @@
 #include "AuthService.h"
 
 
-std::string AuthService::registerUser(const std::string& _email, const std::string& _password)
+std::string AuthService::registerUser(const std::string& _email, const std::string& _password, const std::string& _userName)
 {
     std::tuple<bool,std::string> _response;
-    auto existingUser = UserRepository::findByEmail(_email);
-    if (existingUser.has_value())
+    auto _existingEmail = UserRepository::findByEmail(_email);
+    if (_existingEmail.has_value())
+    {
+        throw std::runtime_error("Emai already exists");
+    }
+    auto _existingUserName = UserRepository::findByUserName(_userName);
+
+    if (_existingUserName.has_value())
     {
         throw std::runtime_error("User already exists");
-
     }
 
-    User user;
+    User _user;
 
-    user.id = "1";
-    user.m_email = _email;
+    _user.id = "1";
+    _user.m_email = _email;
 
-    user.passwordHash = PasswordHasher::hash(_password);
-
-    UserRepository::save(user);
+    _user.m_passwordHash = PasswordHasher::hash(_password);
+    _user.m_userName = _userName;
+    UserRepository::save(_user);
 
     AuthResponse _generateToken;
 
-    _generateToken.accessToken = JwtService::generateToken(user.id);
+    _generateToken.accessToken = JwtService::generateToken(_user.id);
 
 
     return _generateToken.accessToken;
 }
 
-AuthResponse AuthService::loginUser(
-    const LoginRequest& request
-) {
+std::string AuthService::loginUser(const std::string& _email, const std::string& _password, const std::string& _userName)
+{
+    bool _validPassword;
+    AuthResponse _generateToken;
 
-    auto user =
-        UserRepository::findByEmail(
-            request.email
-        );
-
-    if (!user.has_value()) {
-        throw std::runtime_error(
-            "Invalid credentials"
-        );
+    if (_email.empty() && _userName.empty())
+    {
+        throw std::runtime_error("Email Or UserName is empty");
     }
+    if (!_email.empty())
+    {
+        auto _user = UserRepository::findByEmail(_email);
+        if (_user.has_value())
+        {
+            _validPassword = PasswordHasher::verify(_password,_user->m_passwordHash);
+            _generateToken.accessToken =JwtService::generateToken(_user->id);
+        }
 
-    bool validPassword =
-        PasswordHasher::verify(
-            request.password,
-            user->passwordHash
-        );
+        if (!_validPassword)
+        {
+            throw std::runtime_error("Invalid credentials");
+        }
 
-    if (!validPassword) {
-        throw std::runtime_error(
-            "Invalid credentials"
-        );
     }
-
-    AuthResponse response;
-
-    response.accessToken =
-        JwtService::generateToken(
-            user->id
-        );
-
-    return response;
+    else if (!_userName.empty())
+    {
+        auto _user = UserRepository::findByUserName(_userName);
+        if (_user.has_value() )
+        _validPassword = PasswordHasher::verify(_password,_user->m_passwordHash);
+        _generateToken.accessToken =JwtService::generateToken(_user->id);
+    }
+    else
+    {
+        throw std::runtime_error("User Or Email wasn't exists");
+    }
+    return _generateToken.accessToken;
 }

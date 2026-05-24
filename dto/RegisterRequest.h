@@ -9,7 +9,7 @@
 class RegisterRequest {
 
 private:
-    std::string m_username;
+    std::string m_userName;
     std::string m_email;
     std::string m_password;
 

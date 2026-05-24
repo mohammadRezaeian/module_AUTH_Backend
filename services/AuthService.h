@@ -16,8 +16,8 @@ private:
     std::unordered_map<std::string, std::string> values;
 
 public:
-    std::string registerUser(const std::string& _request, const std::string& _password);
-    static AuthResponse loginUser(const LoginRequest& request);
+    std::string registerUser(const std::string& _email, const std::string& _password, const std::string& _userName);
+    std::string loginUser(const std::string& _email, const std::string& _password, const std::string& _userName={""});
 };
 
 

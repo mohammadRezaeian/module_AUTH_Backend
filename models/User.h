@@ -9,7 +9,7 @@ public:
     std::string id;
     std::string m_email;
     std::string m_userName;
-    std::string passwordHash;
+    std::string m_passwordHash;
 };
 
 

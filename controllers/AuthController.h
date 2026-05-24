@@ -20,6 +20,8 @@ namespace V1
         {
         private:
             RegisterRequest  m_registerRequest;
+            LoginRequest     m_LoginRequest;
+
             AuthService      m_authService;
             ValidationsDatas m_validationsDatas;
 
@@ -36,9 +38,9 @@ namespace V1
 
             METHOD_LIST_END
 
-            void registerUser(const drogon::HttpRequestPtr& req,std::function<void(const drogon::HttpResponsePtr&)>&& callback);
-            void loginUser(const drogon::HttpRequestPtr& req,std::function<void(const drogon::HttpResponsePtr&)>&& callback);
-            void me(const drogon::HttpRequestPtr& req,std::function<void(const drogon::HttpResponsePtr&)>&& callback);
+            void registerUser(const drogon::HttpRequestPtr& req, std::function<void(const drogon::HttpResponsePtr&)>&& callback);
+            void loginUser(const drogon::HttpRequestPtr& req, std::function<void(const drogon::HttpResponsePtr&)>&& callback);
+            void me(const drogon::HttpRequestPtr& req, std::function<void(const drogon::HttpResponsePtr&)>&& callback);
 
         };
     }

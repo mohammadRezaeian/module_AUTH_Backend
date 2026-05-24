@@ -6,23 +6,18 @@
 #include  <json/json.h>
 
 class LoginRequest {
+private:
+    std::string m_email;
+    std::string m_userName;
+    std::string m_password;
+
 public:
-    std::string email;
-    std::string password;
+    void parseJson(const Json::Value& json);
 
-    static LoginRequest fromJson(const Json::Value& json) {
-        if (!json.isObject())
-            throw std::runtime_error("Invalid JSON");
+    [[nodiscard]] std::string getUsername() const;
+    [[nodiscard]] std::string getEmail() const;
+    [[nodiscard]] std::string getPassword() const;
 
-        if (!json.isMember("email") || !json.isMember("password"))
-            throw std::runtime_error("missing fields");
-
-        LoginRequest req;
-        req.email = json["email"].asString();
-        req.password = json["password"].asString();
-
-        return req;
-    }
 };
 
 #endif //AUTH_LOGINREQUEST_H

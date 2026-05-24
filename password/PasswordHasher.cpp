@@ -36,10 +36,8 @@ namespace {
 
 }
 
-std::string PasswordHasher::hash(
-    const std::string& password
-) {
-
+std::string PasswordHasher::hash(const std::string& password)
+{
     auto salt = generateSalt();
     size_t encoded_len = argon2_encodedlen(
         t_cost,
@@ -65,19 +63,15 @@ std::string PasswordHasher::hash(
         encoded.size()
     );
 
-    if (result != ARGON2_OK) {
-        throw std::runtime_error(
-            "argon2 hash failed"
-        );
+    if (result != ARGON2_OK)
+    {
+        throw std::runtime_error("argon2 hash failed");
     }
 
     return std::string(encoded.data());
 }
 
-bool PasswordHasher::verify(
-    const std::string& password,
-    const std::string& hash
-) {
-
+bool PasswordHasher::verify(const std::string& password,const std::string& hash)
+{
     return argon2id_verify(hash.c_str(),password.c_str(),password.size()) == ARGON2_OK;
 }
