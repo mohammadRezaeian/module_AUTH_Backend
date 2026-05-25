@@ -5,9 +5,8 @@
 
 class PasswordHasher {
 public:
-    static std::string hash(const std::string& password);
-
-    static bool verify(const std::string& password, const std::string& hash);
+    std::string hash(const std::string& password);
+    bool verify(const std::string& password, const std::string& hash);
 };
 
 

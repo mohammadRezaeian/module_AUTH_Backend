@@ -10,11 +10,13 @@
 #include "repository/UserRepository.h"
 #include <stdexcept>
 #include <unordered_map>
+#include "services/JwtService.h"
 
 class AuthService {
 private:
-    std::unordered_map<std::string, std::string> values;
-
+    // std::unordered_map<std::string, std::string> values;
+    PasswordHasher m_passwordHasher;
+    JwtService     m_jwtService;
 public:
     std::string registerUser(const std::string& _email, const std::string& _password, const std::string& _userName);
     std::string loginUser(const std::string& _email, const std::string& _password, const std::string& _userName={""});

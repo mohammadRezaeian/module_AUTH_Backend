@@ -3,16 +3,14 @@
 
 
 #include <drogon/HttpFilter.h>
+#include "services/JwtService.h"
+#include "models/CurrentUser.h"
 
-using namespace drogon;
 
-class JwtAuthFilter : public HttpFilter<JwtAuthFilter> {
+class JwtAuthFilter : public drogon::HttpFilter<JwtAuthFilter> {
 public:
-    void doFilter(
-        const HttpRequestPtr& req,
-        FilterCallback&& fcb,
-        FilterChainCallback&& fccb
-    ) override;
+    void doFilter(const drogon::HttpRequestPtr& req, drogon::FilterCallback&& fcb, drogon::FilterChainCallback&& fccb) override;
+    JwtService m_jwtService;
 };
 
 #endif //AUTH_JWTAUTHFILTER_H

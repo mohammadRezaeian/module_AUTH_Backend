@@ -21,13 +21,13 @@ std::string AuthService::registerUser(const std::string& _email, const std::stri
     _user.id = "1";
     _user.m_email = _email;
 
-    _user.m_passwordHash = PasswordHasher::hash(_password);
+    _user.m_passwordHash = m_passwordHasher.hash(_password);
     _user.m_userName = _userName;
     UserRepository::save(_user);
 
     AuthResponse _generateToken;
 
-    _generateToken.accessToken = JwtService::generateToken(_user.id);
+    _generateToken.accessToken = m_jwtService.generateToken(_user.id);
 
 
     return _generateToken.accessToken;
@@ -47,8 +47,8 @@ std::string AuthService::loginUser(const std::string& _email, const std::string&
         auto _user = UserRepository::findByEmail(_email);
         if (_user.has_value())
         {
-            _validPassword = PasswordHasher::verify(_password,_user->m_passwordHash);
-            _generateToken.accessToken =JwtService::generateToken(_user->id);
+            _validPassword = m_passwordHasher.verify(_password,_user->m_passwordHash);
+            _generateToken.accessToken = m_jwtService.generateToken(_user->id);
         }
 
         if (!_validPassword)
@@ -61,8 +61,8 @@ std::string AuthService::loginUser(const std::string& _email, const std::string&
     {
         auto _user = UserRepository::findByUserName(_userName);
         if (_user.has_value() )
-        _validPassword = PasswordHasher::verify(_password,_user->m_passwordHash);
-        _generateToken.accessToken =JwtService::generateToken(_user->id);
+        _validPassword = m_passwordHasher.verify(_password,_user->m_passwordHash);
+        _generateToken.accessToken = m_jwtService.generateToken(_user->id);
     }
     else
     {

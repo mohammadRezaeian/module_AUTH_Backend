@@ -5,13 +5,22 @@
 #include <string>
 #include <vector>
 
-class CurrentUser {
+class CurrentUser
+{
+private:
+    std::string m_userId;
+    std::vector<std::string> m_roles;
+    std::string m_expireAt;
 public:
+    [[nodiscard]] std::string getUserID() const;
+    [[nodiscard]] std::vector<std::string> getRoles() const;
+    [[nodiscard]] std::string getExpireAt() const;
 
-    std::string userId;
+    void settUserID(std::string _userId);
+    void settRoles(std::vector<std::string> _roles) ;
+    void setExpireAt(std::string _expireAt);
 
-    std::vector<std::string> roles;
-    std::string expireAt;
+
 };
 
 #endif //AUTH_CURRENTUSER_H

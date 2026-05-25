@@ -1,7 +1,8 @@
 #include "AuthController.h"
 #include  <services/JwtService.h>
 
-void V1::AUTHAPI::AuthController::registerUser(const drogon::HttpRequestPtr& req, std::function<void(const drogon::HttpResponsePtr&)>&& callback)
+void V1::AUTHAPI::AuthController::registerUser(const drogon::HttpRequestPtr& req,
+    std::function<void(const drogon::HttpResponsePtr&)>&& callback)
 {
     try
     {
@@ -20,7 +21,8 @@ void V1::AUTHAPI::AuthController::registerUser(const drogon::HttpRequestPtr& req
     }
 }
 
-void V1::AUTHAPI::AuthController::loginUser(const drogon::HttpRequestPtr& req, std::function<void(const drogon::HttpResponsePtr&)>&& callback)
+void V1::AUTHAPI::AuthController::loginUser(const drogon::HttpRequestPtr& req,
+    std::function<void(const drogon::HttpResponsePtr&)>&& callback)
 {
     try
     {
@@ -40,23 +42,24 @@ void V1::AUTHAPI::AuthController::loginUser(const drogon::HttpRequestPtr& req, s
     }
 }
 
-void V1::AUTHAPI::AuthController::me(const drogon::HttpRequestPtr& req,std::function<void(const drogon::HttpResponsePtr&)>&& callback)
+void V1::AUTHAPI::AuthController::me(const drogon::HttpRequestPtr& req,
+    std::function<void(const drogon::HttpResponsePtr&)>&& callback)
 {
-    auto currentUser =
-        req->getAttributes()->get<CurrentUser>("currentUser");
+    auto _currentUser = req->getAttributes()->get<CurrentUser>("currentUser");
 
-    Json::Value res;
-    res["userId"] = currentUser.userId;
+    Json::Value _res;
+    _res["userId"] = _currentUser.getUserID();
 
-    for (const auto& role : currentUser.roles)
-        res["roles"].append(role);
+    for (const auto& role : _currentUser.getRoles())
+        _res["roles"].append(role);
 
-    res["expireAt"] = currentUser.expireAt;
+    _res["expireAt"] = _currentUser.getExpireAt();
 
-    callback(drogon::HttpResponse::newHttpJsonResponse(res));
+    callback(drogon::HttpResponse::newHttpJsonResponse(_res));
 }
 
-void V1::AUTHAPI::AuthController::sendMessagesResponse(const std::string &&_typeMessage, const std::string &&_message, std::function<void(const drogon::HttpResponsePtr&)>&& callback)
+void V1::AUTHAPI::AuthController::sendMessagesResponse(const std::string &&_typeMessage, const std::string &&_message,
+    std::function<void(const drogon::HttpResponsePtr&)>&& callback)
 {
     Json::Value message;
     message[_typeMessage]= _message;
@@ -66,7 +69,8 @@ void V1::AUTHAPI::AuthController::sendMessagesResponse(const std::string &&_type
 }
 
 
-void V1::AUTHAPI::AuthController::sendMessageErrors(const std::string &&_message, std::function<void(const drogon::HttpResponsePtr&)>&& callback)
+void V1::AUTHAPI::AuthController::sendMessageErrors(const std::string &&_message,
+    std::function<void(const drogon::HttpResponsePtr&)>&& callback)
 {
     Json::Value message;
     message["error"]= _message;

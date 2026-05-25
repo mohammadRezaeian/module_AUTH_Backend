@@ -1,17 +1,12 @@
 #include "JwtService.h"
-#include <jwt-cpp/jwt.h>
-#include <nlohmann/json.hpp>
 
 namespace {
-
-    const std::string SECRET =
-        "CHANGE_THIS_LONG_SECRET";
+    const std::string SECRET = "CHANGE_THIS_LONG_SECRET";
 
 }
 
-std::string JwtService::generateToken(
-    const std::string& userId
-) {
+std::string JwtService::generateToken(const std::string& userId)
+{
     nlohmann::json roles = {"user", "admin"};
 
     nlohmann::json rolesJson = roles;
@@ -22,7 +17,7 @@ std::string JwtService::generateToken(
         .set_payload_claim("roles",jwt::claim(roles.dump()))
         .set_expires_at(std::chrono::system_clock::now()+ std::chrono::minutes(15))
         .sign(jwt::algorithm::hs512{SECRET}
-            );
+        );
 
     return token;
 }
@@ -53,41 +48,57 @@ bool JwtService::verify(const std::string& token)
         return false;
     }
 }
-std::optional<std::string>
-JwtService::extractUserId(
-    const std::string& token
-) {
-
+std::optional<std::string> JwtService::extractUserId(const std::string& token)
+{
     try {
-
         auto decoded = jwt::decode(token);
 
         return decoded.get_subject();
 
-    } catch (...) {
+    }
+    catch (...)
+    {
         return std::nullopt;
     }
 }
 
-std::vector<std::string>
-JwtService::extractRoles(const std::string& token)
+std::optional<std::vector<std::string>> JwtService::extractRoles(const std::string& token)
 {
-    std::vector<std::string> roles;
 
     try {
-        auto decoded = jwt::decode(token);
+        std::vector<std::string> _roles{""};
 
-        auto claim = decoded.get_payload_claim("roles");
+        auto _decoded = jwt::decode(token);
 
+        auto _claim = _decoded.get_payload_claim("roles");
 
-        auto rolesStr = claim.as_string();
+        auto _rolesStr = _claim.as_string();
 
-        auto j = nlohmann::json::parse(rolesStr);
+        auto _j = nlohmann::json::parse(_rolesStr);
 
-        roles = j.get<std::vector<std::string>>();
-
-    } catch (...) {
+        _roles = _j.get<std::vector<std::string>>();
+        return _roles;
+    }
+    catch (...)
+    {
+        return std::nullopt;
     }
 
-    return roles;
+}
+
+
+std::optional<std::string> JwtService::extractExpirAt(const std::string& token)
+{
+    try {
+        auto _decoded = jwt::decode(token);
+        auto _expireAt = _decoded.get_expires_at();
+
+        auto _timestamp = std::chrono::duration_cast<std::chrono::seconds>( _expireAt.time_since_epoch() ).count();
+
+        return  std::to_string(_timestamp);
+   }
+    catch (...)
+    {
+        return std::nullopt;
+    }
 }
