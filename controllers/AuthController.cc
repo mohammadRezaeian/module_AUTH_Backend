@@ -11,9 +11,11 @@ void V1::AUTHAPI::AuthController::registerUser(const drogon::HttpRequestPtr& req
         m_validationsDatas.validateJsonBody(json);
         m_registerRequest.parseJson(*json);
         m_validationsDatas.validateJson(m_registerRequest);
-        sendMessagesResponse("accessToken", m_authService.registerUser(
+        sendMessagesResponse("accessToken", m_authService.registerUser
+            (
             m_registerRequest.getEmail(), m_registerRequest.getPassword(),
-            m_registerRequest.getUsername()), std::move(callback));
+            m_registerRequest.getUsername()
+            ), std::move(callback));
     }
     catch (const std::exception& e)
     {

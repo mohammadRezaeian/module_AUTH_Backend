@@ -4,8 +4,14 @@
 #include <string>
 
 class AuthResponse {
+
+private:
+    std::string m_accessToken;
+
 public:
-    std::string accessToken;
+    void setAccessToken(std::string _accessToken);
+    [[nodiscard]] std::string getAccessToken() const;
+
 };
 
 

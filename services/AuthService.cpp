@@ -18,19 +18,19 @@ std::string AuthService::registerUser(const std::string& _email, const std::stri
 
     User _user;
 
-    _user.id = "1";
-    _user.m_email = _email;
+    _user.setID("1");
+    _user.setEmail(_email);
 
-    _user.m_passwordHash = m_passwordHasher.hash(_password);
-    _user.m_userName = _userName;
+    _user.setPasswordHash( m_passwordHasher.hash(_password) );
+    _user.setUserName(_userName);
     UserRepository::save(_user);
 
     AuthResponse _generateToken;
 
-    _generateToken.accessToken = m_jwtService.generateToken(_user.id);
+    _generateToken.setAccessToken( m_jwtService.generateToken(_user.getID()) );
 
 
-    return _generateToken.accessToken;
+    return _generateToken.getAccessToken();
 }
 
 std::string AuthService::loginUser(const std::string& _email, const std::string& _password, const std::string& _userName)
@@ -47,8 +47,8 @@ std::string AuthService::loginUser(const std::string& _email, const std::string&
         auto _user = UserRepository::findByEmail(_email);
         if (_user.has_value())
         {
-            _validPassword = m_passwordHasher.verify(_password,_user->m_passwordHash);
-            _generateToken.accessToken = m_jwtService.generateToken(_user->id);
+            _validPassword = m_passwordHasher.verify(_password,_user->getPasswordHash());
+            _generateToken.setAccessToken( m_jwtService.generateToken(_user->getID()) );
         }
 
         if (!_validPassword)
@@ -61,12 +61,12 @@ std::string AuthService::loginUser(const std::string& _email, const std::string&
     {
         auto _user = UserRepository::findByUserName(_userName);
         if (_user.has_value() )
-        _validPassword = m_passwordHasher.verify(_password,_user->m_passwordHash);
-        _generateToken.accessToken = m_jwtService.generateToken(_user->id);
+        _validPassword = m_passwordHasher.verify(_password,_user->getPasswordHash());
+        _generateToken.setAccessToken( m_jwtService.generateToken(_user->getID()));
     }
     else
     {
         throw std::runtime_error("User Or Email wasn't exists");
     }
-    return _generateToken.accessToken;
+    return _generateToken.getAccessToken();
 }
