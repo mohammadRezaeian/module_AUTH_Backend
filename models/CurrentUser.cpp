@@ -15,11 +15,11 @@
     return m_expireAt;
 }
 
-void CurrentUser::settUserID(std::string _userId)
+void CurrentUser::setUserID(std::string _userId)
 {
     this->m_userId = _userId;
 }
-void CurrentUser::settRoles(std::vector<std::string> _roles)
+void CurrentUser::setRoles(std::vector<std::string> _roles)
 {
     this->m_roles = _roles;
 

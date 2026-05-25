@@ -66,8 +66,8 @@ void JwtAuthFilter::doFilter(const drogon::HttpRequestPtr& req, drogon::FilterCa
     }
 
     CurrentUser _currentUser;
-    _currentUser.settUserID(_userIdOpt.value());
-    _currentUser.settRoles(_userRoles.value());
+    _currentUser.setUserID(_userIdOpt.value());
+    _currentUser.setRoles(_userRoles.value());
     _currentUser.setExpireAt(_userExpireAt.value());
 
     req->getAttributes()->insert("currentUser", _currentUser);

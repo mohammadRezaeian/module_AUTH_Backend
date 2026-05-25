@@ -5,7 +5,16 @@
 
 class AuthResponse {
 public:
-    std::string accessToken;
+
+
+private:
+
+    std::string m_accessToken;
+
+public:
+    void setAccessToken(std::string _accessToken);
+    [[nodiscard]] std::string getAccessToken() const;
+
 };
 
 

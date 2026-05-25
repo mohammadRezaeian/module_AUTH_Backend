@@ -16,8 +16,8 @@ public:
     [[nodiscard]] std::vector<std::string> getRoles() const;
     [[nodiscard]] std::string getExpireAt() const;
 
-    void settUserID(std::string _userId);
-    void settRoles(std::vector<std::string> _roles) ;
+    void setUserID(std::string _userId);
+    void setRoles(std::vector<std::string> _roles) ;
     void setExpireAt(std::string _expireAt);
 
 
